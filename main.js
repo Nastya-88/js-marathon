@@ -1,53 +1,64 @@
-//first task
-const firstRow = 'мама мыла раму';
-const secondRow = 'собака друг человека';
-let firstCounter;
-let secondCounter;
+const $btn = document.getElementById('btn-kick');
+const $btnFang = document.getElementById('btn-fang');
 
-function getRow(firstRow, secondRow) {
+const character = {
+    name: 'Pikachu',
+    defaultHP: 100,
+    damageHP: 100,
+    elHP: document.getElementById('health-character'),
+    elProgressbar: document.getElementById('progressbar-character'),
+}
 
-    for (let i = 0; i < firstRow.length; i++) {
-        if (firstRow.charAt(i) != 'а') {
-            continue;
-        }
-        firstCounter += firstRow.charAt(i);
-    }
-
-    for (let j = 0; j < secondRow.length; j++) {
-        if (secondRow.charAt(j) != 'а') {
-            continue;
-        }
-        secondCounter += firstRow.charAt(j);
-    }
-
-    if (firstCounter.length < secondCounter.length) {
-        return secondRow;
-    } else if (firstCounter.length > secondCounter.length) {
-        return firstRow;
-    }
+const enemy = {
+    name: 'Charmander',
+    defaultHP: 100,
+    damageHP: 100,
+    elHP: document.getElementById('health-enemy'),
+    elProgressbar: document.getElementById('progressbar-enemy'),
 };
 
-console.log(getRow(firstRow, secondRow));
 
-// second task
+kikedClick($btn, 'click');
+kikedClick($btnFang, 'click');
 
-let phone = '+71234567890';
+function kikedClick(button, event) {
+    button.addEventListener(event, function () {
+        changeHP(random(5), character);
+        changeHP(random(10), enemy);
+    })
+}
 
-function formattedPhone(pnone) {
-    var result = '';
-    phone += '';
-    for (let i = 0; i < pnone.length; i++) {
-        if (i === 1) {
-            result += pnone.charAt(i) + ' (';
-        } else if (i === 4) {
-            result += pnone.charAt(i) + ') ';
-        } else if (i === 7 || i === 9) {
-            result += pnone.charAt(i) + '-';
-        } else {
-            result += pnone[i];
-        }
-    }
-    return result;
+function init() {
+    console.log('Start game!');
+    renderHP(character);
+    renderHP(enemy);
+};
+function renderHP(person) {
+    renderHPLife(person);
+    renderProgressbarHP(person);
 };
 
-console.log(formattedPhone('+71234567890'));
+function renderHPLife(person) {
+
+    person.elHP.innerText = person.damageHP + " / " + person.defaultHP;
+};
+function renderProgressbarHP(person) {
+    person.elProgressbar.style.width = person.damageHP + "%";
+}
+function changeHP(count, person) {
+    if (person.damageHP < count) {
+        person.damageHP = 0
+        alert("Бедный " + person.name + " проиграл бой!");
+        $btn.disabled = true;
+        $btnFang.disabled = true;
+    } else {
+        person.damageHP -= count;
+    }
+
+    renderHP(person);
+}
+function random(num) {
+    return Math.ceil(Math.random() * num);
+}
+
+init();

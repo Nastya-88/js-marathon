@@ -1,64 +1,67 @@
-const $btn = document.getElementById('btn-kick');
-const $btnFang = document.getElementById('btn-fang');
+(function () {
+    const $btn = document.getElementById('btn-kick');
+    const $btnFang = document.getElementById('btn-fang');
 
-const character = {
-    name: 'Pikachu',
-    defaultHP: 100,
-    damageHP: 100,
-    elHP: document.getElementById('health-character'),
-    elProgressbar: document.getElementById('progressbar-character'),
-}
+    function renderHP() {
+        this.elHP.innerText = this.damageHP + " / " + this.defaultHP;
+        this.elProgressbar.style.width = this.damageHP + "%";
 
-const enemy = {
-    name: 'Charmander',
-    defaultHP: 100,
-    damageHP: 100,
-    elHP: document.getElementById('health-enemy'),
-    elProgressbar: document.getElementById('progressbar-enemy'),
-};
+    };
+    function changeHP(count) {
+        if (this.damageHP < count) {
+            this.damageHP = 0
+            alert("Бедный " + this.name + " проиграл бой!");
+            $btn.disabled = true;
+            $btnFang.disabled = true;
+        } else {
+            this.damageHP -= count;
+        }
+
+        this.renderHP(this.name);
+    };
+
+    const character = {
+        name: 'Pikachu',
+        defaultHP: 100,
+        damageHP: 100,
+        elHP: document.getElementById('health-character'),
+        elProgressbar: document.getElementById('progressbar-character'),
+
+        renderHP: renderHP,
+        changeHP: changeHP,
+    };
+
+    const enemy = {
+        name: 'Charmander',
+        defaultHP: 100,
+        damageHP: 100,
+        elHP: document.getElementById('health-enemy'),
+        elProgressbar: document.getElementById('progressbar-enemy'),
+
+        renderHP: renderHP,
+        changeHP: changeHP,
+    };
 
 
-kikedClick($btn, 'click');
-kikedClick($btnFang, 'click');
+    kikedClick($btn, 'click');
+    kikedClick($btnFang, 'click');
 
-function kikedClick(button, event) {
-    button.addEventListener(event, function () {
-        changeHP(random(5), character);
-        changeHP(random(10), enemy);
-    })
-}
-
-function init() {
-    console.log('Start game!');
-    renderHP(character);
-    renderHP(enemy);
-};
-function renderHP(person) {
-    renderHPLife(person);
-    renderProgressbarHP(person);
-};
-
-function renderHPLife(person) {
-
-    person.elHP.innerText = person.damageHP + " / " + person.defaultHP;
-};
-function renderProgressbarHP(person) {
-    person.elProgressbar.style.width = person.damageHP + "%";
-}
-function changeHP(count, person) {
-    if (person.damageHP < count) {
-        person.damageHP = 0
-        alert("Бедный " + person.name + " проиграл бой!");
-        $btn.disabled = true;
-        $btnFang.disabled = true;
-    } else {
-        person.damageHP -= count;
+    function kikedClick(button, event) {
+        button.addEventListener(event, function () {
+            character.changeHP(random(5));
+            enemy.changeHP(random(10));
+        })
     }
 
-    renderHP(person);
-}
-function random(num) {
-    return Math.ceil(Math.random() * num);
-}
+    function init() {
+        console.log('Start game!');
+        character.renderHP();
+        enemy.renderHP();
+    };
 
-init();
+    function random(num) {
+        return Math.ceil(Math.random() * num);
+    }
+
+    init();
+})();

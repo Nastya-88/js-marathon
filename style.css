@@ -451,7 +451,10 @@ h1 {
     z-index: 1;
 }
 
-
+.button-count {
+    font-size: 14px;
+    color: red;
+}
 .wrap {
     display: flex;
     margin: 0 auto;

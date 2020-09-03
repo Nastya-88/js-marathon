@@ -33,14 +33,25 @@ body {
     right: 0;
     opacity: .4;
 }
+.low {
+    background-color: yellow;
+}
+.critical {
+    background-color: red;
+}
+.button-start {
+    width: 200px;
+    margin: 0 auto;
+}
 
 .control {
-    width: 320px;
+    width: 450px;
     height: 260px;
     position: relative;
     margin: 20px;
     display: flex;
-    justify-content: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
     align-items: center;
 }
 #btn-kick {
@@ -49,6 +60,7 @@ body {
 .playground {
     max-width: 1024px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-around;
     margin: 30px auto;
 }
@@ -278,6 +290,9 @@ body {
     outline: none !important;
     cursor: pointer;
     font-size: 16px;
+    width: 50%;
+    max-width: 200px;
+    margin-bottom: 10px;
 
 }
 .button:after {

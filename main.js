@@ -1,78 +1,62 @@
+import Game from './game.js';
+import { pokemons } from './pokemons.js';
 import Pokemon from './pokemon.js';
-import random from './random.js';
 import showCountClicked from './showCountClicked.js';
+import { random } from './utils.js';
 
-const player1 = new Pokemon({
-    name: 'Pikachu',
-    type: 'electric',
-    weakness: ['fighting', 'water'],
-    resistance: ['steel'],
-    defaultHP: 500,
-    damageHP: 500,
-    selectors: 'character'
+const start = new Game();
+start.beginStart();
+
+const pokemonRandom1 = pokemons[random(pokemons.length) - 1];
+const pokemonRandom2 = pokemons[random(pokemons.length) - 1];
+
+let player1 = new Pokemon({
+    ...pokemonRandom1,
+    selectors: 'player1'
 });
 
-
-const player2 = new Pokemon({
-    name: 'Charmander',
-    type: 'fire',
-    weakness: ['fighting', 'water'],
-    resistance: ['steel'],
-    defaultHP: 400,
-    damageHP: 400,
-    selectors: 'enemy'
+let player2 = new Pokemon({
+    ...pokemonRandom2,
+    selectors: 'player2'
 });
-console.log(player1);
-console.log(player2);
 
-const $btn = $getElById('btn-kick');
-const $btnFang = $getElById('btn-fang');
+export function renderPlayer() {
 
-function $getElById(id) {
-    return document.getElementById(id);
-};
+    const $control = document.querySelector('.control');
 
-$btn.addEventListener('click', function () {
-    btnCountJolt();
-    player1.changeHP(random(10), function (count) {
-        console.log(count);
-        generateLog(player1, player2, count);
-
+    player1.attacks.forEach(item => {
+        // console.log(item);
+        const $btn = document.createElement('button');
+        $btn.classList.add('button');
+        $btn.innerText = item.name;
+        const btnCount = showCountClicked($btn, item.maxCount);
+        $btn.addEventListener('click', () => {
+            console.log('click button', $btn.innerText);
+            btnCount();
+            player1.changeHP(random(item.maxCount), function (count) {
+                generateLog(player1, player2, count);
+            });
+            player2.changeHP(random(item.maxCount), function (count) {
+                generateLog(player2, player1, count);
+            });
+        })
+        $control.appendChild($btn);
     });
+}
 
-    player2.changeHP(random(20), function (count) {
-        console.log(count);
-        generateLog(player1, player2, count);
-    });
-});
-$btnFang.addEventListener('click', function () {
-    btnCountElectro();
-    player1.changeHP(random(10), function (count) {
 
-        console.log(count);
-        generateLog(player1, player2, count);
-
-    });
-    player2.changeHP(random(20), function (count) {
-        console.log(count);
-        generateLog(player1, player2, count);
-    });
-});
-const btnCountJolt = showCountClicked($btn, 8);
-const btnCountElectro = showCountClicked($btnFang, 11);
-
-export function generateLog({ name, damageHP, defaultHP } = player1, { name: secondName } = player2, count) {
+export function generateLog({ name, hp: { current, total } } = player1, { name: secondName } = player2, count) {
     const logs = [
-        `${name} вспомнил что-то важное, но неожиданно ${secondName}, не помня себя от испуга, ударил в предплечье врага.  -${count} [${damageHP}/${defaultHP}]`,
-        `${name}  поперхнулся, и за это ${secondName} с испугу приложил прямой удар коленом в лоб врага. -${count}[${damageHP}/${defaultHP}]`,
-        `${name}  забылся, но в это время наглый ${secondName}, приняв волевое решение, неслышно подойдя сзади, ударил. -${count}[${damageHP}/${defaultHP}]`,
-        `${name}  пришел в себя, но неожиданно ${secondName} случайно нанес мощнейший удар. -${count}[${damageHP}/${defaultHP}]`,
-        `${name}  поперхнулся, но в это время ${secondName} нехотя раздробил кулаком \<вырезанно цензурой\> противника. -${count}[${damageHP}/${defaultHP}]`,
-        `${name}  удивился, а ${secondName} пошатнувшись влепил подлый удар. -${count}[${damageHP}/${defaultHP}]`,
-        `${name}  высморкался, но неожиданно ${secondName} провел дробящий удар. -${count}[${damageHP}/${defaultHP}]`,
-        `${name}  пошатнулся, и внезапно наглый ${secondName} беспричинно ударил в ногу противника. -${count}[${damageHP}/${defaultHP}]`,
-        `${name}  расстроился, как вдруг, неожиданно ${secondName} случайно влепил стопой в живот соперника. -${count}[${damageHP}/${defaultHP}]`,
-        `${name}  пытался что-то сказать, но вдруг, неожиданно ${secondName} со скуки, разбил бровь сопернику. -${count}[${damageHP}/${defaultHP}]`
+        `${name} вспомнил что-то важное, но неожиданно ${secondName}, не помня себя от испуга, ударил в предплечье врага.  -${count} [${current}/${total}]`,
+        `${name}  поперхнулся, и за это ${secondName} с испугу приложил прямой удар коленом в лоб врага. -${count}[${current}/${total}]`,
+        `${name}  забылся, но в это время наглый ${secondName}, приняв волевое решение, неслышно подойдя сзади, ударил. -${count}[${current}/${total}]`,
+        `${name}  пришел в себя, но неожиданно ${secondName} случайно нанес мощнейший удар. -${count}[${current}/${total}]`,
+        `${name}  поперхнулся, но в это время ${secondName} нехотя раздробил кулаком \<вырезанно цензурой\> противника. -${count}[${current}/${total}]`,
+        `${name}  удивился, а ${secondName} пошатнувшись влепил подлый удар. -${count}[${current}/${total}]`,
+        `${name}  высморкался, но неожиданно ${secondName} провел дробящий удар. -${count}[${current}/${total}]`,
+        `${name}  пошатнулся, и внезапно наглый ${secondName} беспричинно ударил в ногу противника. -${count}[${current}/${total}]`,
+        `${name}  расстроился, как вдруг, неожиданно ${secondName} случайно влепил стопой в живот соперника. -${count}[${current}/${total}]`,
+        `${name}  пытался что-то сказать, но вдруг, неожиданно ${secondName} со скуки, разбил бровь сопернику. -${count}[${current}/${total}]`
     ];
 
     return logs[random(logs.length) - 1];

@@ -19,6 +19,7 @@ body {
     background: url(./assets/Parkscene_Background.png) center bottom repeat-x, url(./assets/SkyDay.png) center top / cover;
     text-align: center;
     user-select: none;
+    
 }
 
 .catch_screen {
